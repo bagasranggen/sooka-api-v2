@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 import { supabase } from '@/libs/fetcher';
-import { createSupaEntryCategories, createSupaEntryStatus } from '@/libs/factory';
+import { createSupaEntryCategoriesItem } from '@/libs/factory';
 
 export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
@@ -31,11 +31,7 @@ export async function GET(req: NextRequest) {
 
     if (categoriesData.length > 0) {
         categoriesData.forEach((item) => {
-            const { isLive } = createSupaEntryStatus(item);
-
-            if (!isLive) return;
-
-            data.push(createSupaEntryCategories({ item }));
+            data.push(createSupaEntryCategoriesItem({ item }));
         });
     }
 

@@ -1,13 +1,13 @@
 import { createSupaRelatedEntryLink } from './createSupaRelatedEntryLink';
 
-export type CreateSupaEntryLinkProps = {
+export type CreateSupaEntryLinkItemProps = {
     item?: any;
     products?: any[];
     categories?: any[];
     pages?: any[];
 };
 
-export const createSupaEntryLink = ({ item, products, categories, pages }: CreateSupaEntryLinkProps) => {
+export const createSupaEntryLinkItem = ({ item, products, categories, pages }: CreateSupaEntryLinkItemProps) => {
     let data = null;
 
     if (item) {

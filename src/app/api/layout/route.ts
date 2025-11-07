@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 import { supabase } from '@/libs/fetcher';
-import { createSupaEntryLink, createSupaEntryStatus } from '@/libs/factory';
+import { createSupaEntryLinkItem, createSupaEntryStatus } from '@/libs/factory';
 import { getSupaRelatedEntry } from '@/libs/utils';
 
 export async function GET(req: NextRequest) {
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
 
             navigations.push({
                 entryStatus: item?.entry_status,
-                link: createSupaEntryLink({ item, products, categories, pages }),
+                link: createSupaEntryLinkItem({ item, products, categories, pages }),
             });
         });
     }
@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
 
             tmp.push({
                 icon,
-                link: createSupaEntryLink({ item, products, categories, pages }),
+                link: createSupaEntryLinkItem({ item, products, categories, pages }),
             });
         });
 
