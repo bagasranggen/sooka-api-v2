@@ -33,21 +33,6 @@ export const getSupaRelatedAddons = async ({ id }: { id: number }) => {
                     const id = item.id;
                     const mediaId = item?.thumbnail_id;
 
-                    // const { data: pricesData } = await supabase(await cookies())
-                    //     .from('addons_prices')
-                    //     .select()
-                    //     .eq('_parent_id', id);
-                    //
-                    // const prices: any[] = [];
-                    //
-                    // if (pricesData && pricesData.length > 0) {
-                    //     pricesData.forEach((item) => {
-                    //         const price = createSupaEntryPricesItem({ item });
-                    //
-                    //         if (price) prices.push(price);
-                    //     });
-                    // }
-
                     data.push({
                         title: item.title,
                         slug: item.slug,
