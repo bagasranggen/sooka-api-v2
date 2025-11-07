@@ -9,13 +9,14 @@ export async function GET(req: NextRequest) {
     const uri = searchParams.get('uri');
 
     const PAGES_TABLE_SELECT = 'entry_status,type_handle,uri';
+    const PAGES_TABLE_COLLECTION = ['homepage', 'categories', 'products', 'pages'];
 
     const pagesData: any[] = [];
 
     const createSupaEntry = ({ item }: { item: any }) => {
         const { isLive } = createSupaEntryStatus(item);
 
-        let data = undefined;
+        let data = null;
 
         if (isLive && item?.type_handle) {
             data = {
@@ -28,46 +29,28 @@ export async function GET(req: NextRequest) {
     };
 
     if (uri) {
-        const { data: homepageData } = await supabase(await cookies())
-            .from('homepage')
-            .select(PAGES_TABLE_SELECT)
-            .eq('uri', uri);
+        await Promise.all(
+            PAGES_TABLE_COLLECTION.map(async (item) => {
+                const { data } = await supabase(await cookies())
+                    .from(item)
+                    .select(PAGES_TABLE_SELECT)
+                    .eq('uri', uri);
 
-        if (homepageData) pagesData.push(...homepageData);
-
-        const { data: categoriesData } = await supabase(await cookies())
-            .from('categories')
-            .select(PAGES_TABLE_SELECT)
-            .eq('uri', uri);
-
-        if (categoriesData) pagesData.push(...categoriesData);
-
-        const { data: productsData } = await supabase(await cookies())
-            .from('products')
-            .select(PAGES_TABLE_SELECT)
-            .eq('uri', uri);
-
-        if (productsData) pagesData.push(...productsData);
+                if (data) pagesData.push(...data);
+            })
+        );
     }
 
     if (!uri) {
-        const { data: homepageData } = await supabase(await cookies())
-            .from('homepage')
-            .select(PAGES_TABLE_SELECT);
+        await Promise.all(
+            PAGES_TABLE_COLLECTION.map(async (item) => {
+                const { data } = await supabase(await cookies())
+                    .from(item)
+                    .select(PAGES_TABLE_SELECT);
 
-        if (homepageData) pagesData.push(...homepageData);
-
-        const { data: categoriesData } = await supabase(await cookies())
-            .from('categories')
-            .select(PAGES_TABLE_SELECT);
-
-        if (categoriesData) pagesData.push(...categoriesData);
-
-        const { data: productsData } = await supabase(await cookies())
-            .from('products')
-            .select(PAGES_TABLE_SELECT);
-
-        if (productsData) pagesData.push(...productsData);
+                if (data) pagesData.push(...data);
+            })
+        );
     }
 
     const data: any[] = [];
