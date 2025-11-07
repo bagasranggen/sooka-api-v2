@@ -3,7 +3,13 @@ import { cookies } from 'next/headers';
 
 import { supabase } from '@/libs/fetcher';
 import { createSupaEntryStatus } from '@/libs/factory';
-import { getSupaCategories, getSupaMedia, getSupaPrices, getSupaRelatedAddons } from '@/libs/utils';
+import {
+    getSupaCategories,
+    getSupaMedia,
+    getSupaPrices,
+    getSupaRelatedAddons,
+    getSupaRelatedMarquee,
+} from '@/libs/utils';
 
 export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
@@ -84,6 +90,15 @@ export async function GET(req: NextRequest) {
                         sizes: MEDIA_ASSETS_HANDLES,
                     }),
                     addons: await getSupaRelatedAddons({ id: productId }),
+                    marquee: await getSupaRelatedMarquee({
+                        table: 'products_rels',
+                        path: 'marquee',
+                        field: 'media_product_id',
+                        id: productId,
+                        mediaTable: 'media_product',
+                        volume: 'mediaProduct',
+                        sizes: ['productMarquee', 'productMarqueeMobile'],
+                    }),
                 });
             })
         );

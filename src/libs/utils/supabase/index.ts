@@ -3,3 +3,4 @@ export * from './getSupaMedia';
 export * from './getSupaPrices';
 export * from './getSupaRelatedAddons';
 export * from './getSupaRelatedLink';
+export * from './getSupaRelatedMarquee';
