@@ -9,9 +9,9 @@ import {
 export type GetSupaMediaProps = {
     table: string;
     id: number;
-} & Pick<CreateSupaEntryMediaItemProps, 'sizes'>;
+} & Pick<CreateSupaEntryMediaItemProps, 'sizes' | 'volume'>;
 
-export const getSupaMedia = async ({ table, id, sizes }: GetSupaMediaProps) => {
+export const getSupaMedia = async ({ table, id, volume, sizes }: GetSupaMediaProps) => {
     let data = null;
 
     if (table && id) {
@@ -21,7 +21,7 @@ export const getSupaMedia = async ({ table, id, sizes }: GetSupaMediaProps) => {
             .eq('id', id);
 
         if (mediaData && mediaData.length > 0) {
-            data = createSupaEntryMediaItem({ item: mediaData[0], sizes: sizes ?? [] });
+            data = createSupaEntryMediaItem({ item: mediaData[0], volume, sizes: sizes ?? [] });
         }
     }
 
