@@ -1,14 +1,11 @@
-import { createSupaRelatedEntryLink } from './createSupaRelatedEntryLink';
+import { getSupaRelatedLink } from '../../utils/supabase/getSupaRelatedLink';
 
 export type CreateSupaEntryLinkItemProps = {
     item?: any;
-    products?: any[];
-    categories?: any[];
-    pages?: any[];
 };
 
-export const createSupaEntryLinkItem = ({ item, products, categories, pages }: CreateSupaEntryLinkItemProps) => {
-    let data = null;
+export const createSupaEntryLinkItem = async ({ item }: CreateSupaEntryLinkItemProps) => {
+    let data: any | null = null;
 
     if (item) {
         data = {
@@ -19,9 +16,9 @@ export const createSupaEntryLinkItem = ({ item, products, categories, pages }: C
             mail: item?.link_mail,
             whatsappNumber: item?.link_whatsapp_number,
             whatsappMessage: item?.link_whatsapp_message,
-            product: createSupaRelatedEntryLink({ items: products ?? [], id: item?.link_product_id }),
-            category: createSupaRelatedEntryLink({ items: categories ?? [], id: item?.link_category_id }),
-            page: createSupaRelatedEntryLink({ items: pages ?? [], id: item?.link_page_id }),
+            product: await getSupaRelatedLink({ table: 'products', id: item?.link_product_id }),
+            category: await getSupaRelatedLink({ table: 'categories', id: item?.link_category_id }),
+            page: await getSupaRelatedLink({ table: 'pages', id: item?.link_page_id }),
         };
     }
 

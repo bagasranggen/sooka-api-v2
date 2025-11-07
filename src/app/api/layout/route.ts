@@ -3,11 +3,8 @@ import { cookies } from 'next/headers';
 
 import { supabase } from '@/libs/fetcher';
 import { createSupaEntryLinkItem, createSupaEntryStatus } from '@/libs/factory';
-import { getSupaRelatedEntry } from '@/libs/utils';
 
 export async function GET(req: NextRequest) {
-    const { pages, products, categories } = await getSupaRelatedEntry();
-
     const { data: headerData } = await supabase(await cookies())
         .from('navigation_navigations')
         .select()
@@ -16,16 +13,18 @@ export async function GET(req: NextRequest) {
     const navigations: any[] = [];
 
     if (headerData && headerData.length > 0) {
-        headerData.forEach((item) => {
-            const { isLive } = createSupaEntryStatus(item);
+        await Promise.all(
+            headerData.map(async (item) => {
+                const { isLive } = createSupaEntryStatus(item);
 
-            if (!isLive) return;
+                if (!isLive) return;
 
-            navigations.push({
-                entryStatus: item?.entry_status,
-                link: createSupaEntryLinkItem({ item, products, categories, pages }),
-            });
-        });
+                navigations.push({
+                    entryStatus: item?.entry_status,
+                    link: await createSupaEntryLinkItem({ item }),
+                });
+            })
+        );
     }
 
     const { data: footerData } = await supabase(await cookies())
@@ -56,21 +55,23 @@ export async function GET(req: NextRequest) {
     if (footerSocialData && footerSocialData.length > 0) {
         const tmp: any[] = [];
 
-        footerSocialData.forEach((item) => {
-            let icon = null;
+        await Promise.all(
+            footerSocialData.map(async (item) => {
+                let icon = null;
 
-            if (item?.icon_source) {
-                icon = Object.assign({
-                    source: item?.icon_source,
-                    reactIcon: item?.icon_react_icon,
+                if (item?.icon_source) {
+                    icon = Object.assign({
+                        source: item?.icon_source,
+                        reactIcon: item?.icon_react_icon,
+                    });
+                }
+
+                tmp.push({
+                    icon,
+                    link: await createSupaEntryLinkItem({ item }),
                 });
-            }
-
-            tmp.push({
-                icon,
-                link: createSupaEntryLinkItem({ item, products, categories, pages }),
-            });
-        });
+            })
+        );
 
         if (tmp.length > 0) {
             footerNavigation = Object.assign(footerNavigation ?? {}, { socialMedia: tmp });
