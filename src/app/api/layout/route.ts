@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 
 import { supabase } from '@/libs/fetcher';
 import { createSupaEntryLinkItem, createSupaEntryStatus } from '@/libs/factory';
+import { sortArrayObject } from '@/libs/utils';
 
 export async function GET(req: NextRequest) {
     const { data: headerData } = await supabase(await cookies())
@@ -20,11 +21,16 @@ export async function GET(req: NextRequest) {
                 if (!isLive) return;
 
                 navigations.push({
+                    order: item?._order,
                     entryStatus: item?.entry_status,
                     link: await createSupaEntryLinkItem({ item }),
                 });
             })
         );
+    }
+
+    if (navigations && navigations.length > 0) {
+        sortArrayObject({ items: navigations, key: 'order' });
     }
 
     const { data: footerData } = await supabase(await cookies())
