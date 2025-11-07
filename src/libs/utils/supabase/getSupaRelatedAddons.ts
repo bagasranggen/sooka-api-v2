@@ -52,7 +52,12 @@ export const getSupaRelatedAddons = async ({ id }: { id: number }) => {
                         title: item.title,
                         slug: item.slug,
                         prices: await getSupaPrices({ table: 'addons_prices', id }),
-                        thumbnail: await getSupaMedia({ table: 'media_addon', id: mediaId, sizes: ['assets400x400'] }),
+                        thumbnail: await getSupaMedia({
+                            table: 'media_addon',
+                            id: mediaId,
+                            volume: 'mediaAddon',
+                            sizes: ['assets400x400'],
+                        }),
                     });
                 })
             );

@@ -74,11 +74,13 @@ export async function GET(req: NextRequest) {
                     thumbnail: await getSupaMedia({
                         table: 'media_product',
                         id: item?.thumbnail_id,
+                        volume: 'mediaProduct',
                         sizes: MEDIA_ASSETS_HANDLES,
                     }),
                     thumbnailHover: await getSupaMedia({
                         table: 'media_product',
                         id: item?.thumbnail_hover_id,
+                        volume: 'mediaProduct',
                         sizes: MEDIA_ASSETS_HANDLES,
                     }),
                     addons: await getSupaRelatedAddons({ id: productId }),
