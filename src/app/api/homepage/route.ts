@@ -155,6 +155,12 @@ export async function GET(req: NextRequest) {
                 volume: 'mediaGlobal',
                 sizes: STORY_MEDIA_SIZES,
             }),
+            imageDividerMedia:await getSupaMedia({
+                table: 'media_global',
+                id: hd?.image_divider_media_id,
+                volume: 'mediaGlobal',
+                sizes: ['bannerDesktop', 'mediaDividerTablet', 'mediaDividerMobile'],
+            }),
             orderDescription: hd?.order_description,
             orderSteps,
         },
