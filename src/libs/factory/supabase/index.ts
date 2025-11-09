@@ -7,3 +7,4 @@ export * from './createSupaEntryStatus';
 export * from './createSupaProductBase';
 export * from './createSupaProductInfo';
 export * from './createSupaRelatedEntryLinkItem';
+export * from './createSupaRelatedProducts';

@@ -1,2 +1,4 @@
+export * from './createSupaCbDualPanel';
 export * from './createSupaCbSpacing';
-export * from './createSupaCbGallery';
+export * from './createSupaCbMediaRels';
+export * from './createSupaCbRelateProducts';
