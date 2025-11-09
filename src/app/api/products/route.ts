@@ -2,12 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 import { supabase } from '@/libs/fetcher';
-import {
-    createSupaEntryCategories,
-    createSupaEntryMedia,
-    createSupaEntryPrices,
-    createSupaEntryStatus,
-} from '@/libs/factory';
+import { createSupaEntryStatus, createSupaProductBase, createSupaProductInfo } from '@/libs/factory';
+import { getSupaRelatedAddons, getSupaRelatedMarquee, sortArrayObject } from '@/libs/utils';
 
 export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
@@ -44,62 +40,38 @@ export async function GET(req: NextRequest) {
         if (data) productsData = data;
     }
 
-    const { data: pricesData } = await supabase(await cookies())
-        .from('products_prices')
-        .select()
-        .order('_order', { ascending: true });
-
-    const { data: categoriesData } = await supabase(await cookies())
-        .from('categories')
-        .select();
-
-    const { data: mediaData } = await supabase(await cookies())
-        .from('media_product')
-        .select();
-
-    const MEDIA_ASSETS_HANDLES = [
-        'bannerDesktop',
-        'bannerTablet',
-        'bannerMobile',
-        'productDetailBanner',
-        'productDetailSticky',
-        'productDetailMobile',
-        'productListingThumbnail',
-        'productListingThumbnailMobile',
-    ];
-
     const data: any[] = [];
 
     if (productsData && productsData.length > 0) {
-        productsData.forEach((item) => {
-            const { isLive } = createSupaEntryStatus(item);
+        await Promise.all(
+            productsData.map(async (item, i: number) => {
+                const { isLive } = createSupaEntryStatus(item);
 
-            if (!isLive) return;
+                if (!isLive) return;
 
-            const productId = item?.id;
-            const productCategoryId = item?.category_id;
+                const productId = item?.id;
 
-            data.push({
-                url: item?.url,
-                uri: item?.uri,
-                slug: item?.slug,
-                title: item?.title,
-                bannerTitle: item?.banner_title,
-                description: item?.description,
-                prices: createSupaEntryPrices({ item: pricesData ?? [], id: productId }),
-                category: createSupaEntryCategories({ item: categoriesData ?? [], id: productCategoryId }),
-                thumbnail: createSupaEntryMedia({
-                    items: mediaData ?? [],
-                    id: item?.thumbnail_id,
-                    sizes: MEDIA_ASSETS_HANDLES,
-                }),
-                thumbnailHover: createSupaEntryMedia({
-                    items: mediaData ?? [],
-                    id: item?.thumbnail_hover_id,
-                    sizes: MEDIA_ASSETS_HANDLES,
-                }),
-            });
-        });
+                data.push({
+                    order: i,
+                    ...createSupaProductBase({ item }),
+                    ...(await createSupaProductInfo({ item })),
+                    addons: await getSupaRelatedAddons({ id: productId }),
+                    marquee: await getSupaRelatedMarquee({
+                        table: 'products_rels',
+                        path: 'marquee',
+                        field: 'media_product_id',
+                        id: productId,
+                        mediaTable: 'media_product',
+                        volume: 'mediaProduct',
+                        sizes: ['productMarquee', 'productMarqueeMobile'],
+                    }),
+                });
+            })
+        );
+    }
+
+    if (data.length > 0) {
+        sortArrayObject({ items: data, key: 'order' });
     }
 
     return NextResponse.json({
