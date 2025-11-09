@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 import { supabase } from '@/libs/fetcher';
@@ -8,9 +8,10 @@ import {
     createSupaEntryStatus,
     createSupaProductBase,
     createSupaProductInfo,
+    createSupaRelatedProducts,
 } from '@/libs/factory';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     const { data: homepageData } = await supabase(await cookies())
         .from('homepage')
         .select();
@@ -90,36 +91,14 @@ export async function GET(req: NextRequest) {
                     });
                 }
 
-                const { data: productsData } = await supabase(await cookies())
-                    .from('products')
-                    .select()
-                    .in('id', productIds)
-                    .order('slug', { ascending: true });
-
                 let tmp = null;
 
                 const tag = await getSupaTags({ id: item?.tag_id });
+                const products = await createSupaRelatedProducts({ productIds });
 
                 if (tag) tmp = Object.assign(tmp ?? {}, { tag });
 
-                if (productsData && productsData.length > 0) {
-                    const tmpProducts: any[] = [];
-
-                    await Promise.all(
-                        productsData.map(async (item) => {
-                            tmpProducts.push({
-                                ...createSupaProductBase({ item }),
-                                ...(await createSupaProductInfo({ item })),
-                            });
-                        })
-                    );
-
-                    if (tmpProducts.length > 0) {
-                        tmp = Object.assign(tmp ?? {}, {
-                            products: tmpProducts,
-                        });
-                    }
-                }
+                if (products) tmp = Object.assign(tmp ?? {}, { products: products });
 
                 if (tmp) highlights.push(tmp);
             })
@@ -155,7 +134,7 @@ export async function GET(req: NextRequest) {
                 volume: 'mediaGlobal',
                 sizes: STORY_MEDIA_SIZES,
             }),
-            imageDividerMedia:await getSupaMedia({
+            imageDividerMedia: await getSupaMedia({
                 table: 'media_global',
                 id: hd?.image_divider_media_id,
                 volume: 'mediaGlobal',
