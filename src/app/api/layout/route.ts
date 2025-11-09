@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 import { supabase } from '@/libs/fetcher';
 import { createSupaEntryLinkItem, createSupaEntryStatus } from '@/libs/factory';
 import { sortArrayObject } from '@/libs/utils';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     const { data: headerData } = await supabase(await cookies())
         .from('navigation_navigations')
         .select()
