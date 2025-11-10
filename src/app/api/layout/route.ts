@@ -54,7 +54,7 @@ export async function GET() {
 
     if (fd?.business_hours) {
         footerNavigation = Object.assign(footerNavigation ?? {}, {
-            businessHour: fd.business_hours,
+            businessHours: fd.business_hours,
         });
     }
 
