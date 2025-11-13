@@ -6,6 +6,7 @@ import { getSupaMedia, getSupaProducts, getSupaTags, sortArrayObject } from '@/l
 import {
     createSupaEntryLinkItem,
     createSupaEntryStatus,
+    createSupaMeta,
     createSupaProductBase,
     createSupaProductInfo,
     createSupaRelatedProducts,
@@ -119,6 +120,7 @@ export async function GET() {
 
     return NextResponse.json({
         entry: {
+            meta: createSupaMeta({ item: hd }),
             bannerMedia,
             highlights,
             storyDescription: hd?.story_description,

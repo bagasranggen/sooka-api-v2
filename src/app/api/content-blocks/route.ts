@@ -8,6 +8,7 @@ import {
     createSupaCbRelateProducts,
     createSupaCbSpacing,
     createSupaEntryLinkItem,
+    createSupaMeta,
 } from '@/libs/factory';
 import { sortArrayObject } from '@/libs/utils';
 
@@ -128,6 +129,7 @@ export async function GET(req: NextRequest) {
         entries: {
             docs: [
                 {
+                    meta: createSupaMeta({ item: pagesData?.[0] }),
                     contentBlocks,
                 },
             ],
