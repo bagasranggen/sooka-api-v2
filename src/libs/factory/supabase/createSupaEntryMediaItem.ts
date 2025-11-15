@@ -1,13 +1,17 @@
+import { cookies } from 'next/headers';
+
+import { supabase } from '@/libs/fetcher';
 import { camelCaseToUnderscoreCase } from '../../utils/camelCaseToUnderscoreCase';
 import { createSupaEntryMediaUrl } from './createSupaEntryMediaUrl';
 
 export type CreateSupaEntryMediaItemProps = {
     item: any;
+    table?: string;
     volume?: string;
     sizes?: string[];
 };
 
-export const createSupaEntryMediaItem = ({ item, volume, sizes }: CreateSupaEntryMediaItemProps) => {
+export const createSupaEntryMediaItem = async ({ item, volume, sizes, table }: CreateSupaEntryMediaItemProps) => {
     let data = null;
 
     let baseUrl = process?.env?.S3_MEDIA_URI ?? '';
@@ -25,6 +29,8 @@ export const createSupaEntryMediaItem = ({ item, volume, sizes }: CreateSupaEntr
     }
 
     if (item && sizes && sizes.length > 0) {
+        // const tmp = createSupEntryMediaSize({ item, sizes, base: baseUrl });
+
         let tmp: any = undefined;
 
         sizes.forEach((handleSize) => {
@@ -45,6 +51,21 @@ export const createSupaEntryMediaItem = ({ item, volume, sizes }: CreateSupaEntr
         });
 
         if (tmp) data = Object.assign(data ?? {}, { sizes: tmp });
+    }
+
+    const mobileAssetId = item?.mobile_assets_id;
+
+    if (table && mobileAssetId) {
+        const { data: mediaData } = await supabase(await cookies())
+            .from(table)
+            .select()
+            .eq('id', mobileAssetId);
+
+        if (sizes && mediaData && mediaData.length > 0) {
+            const tmp: any = await createSupaEntryMediaItem({ item: mediaData[0], volume, sizes, table });
+
+            if (tmp) data = Object.assign(data ?? {}, { mobileAssets: tmp });
+        }
     }
 
     return data;

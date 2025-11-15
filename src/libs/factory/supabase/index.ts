@@ -4,6 +4,7 @@ export * from './createSupaEntryMediaItem';
 export * from './createSupaEntryMediaUrl';
 export * from './createSupaEntryPricesItem';
 export * from './createSupaEntryStatus';
+export * from './createSupaMeta';
 export * from './createSupaProductBase';
 export * from './createSupaProductInfo';
 export * from './createSupaRelatedEntryLinkItem';

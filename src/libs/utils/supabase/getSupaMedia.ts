@@ -21,7 +21,7 @@ export const getSupaMedia = async ({ table, id, volume, sizes }: GetSupaMediaPro
             .eq('id', id);
 
         if (mediaData && mediaData.length > 0) {
-            data = createSupaEntryMediaItem({ item: mediaData[0], volume, sizes: sizes ?? [] });
+            data = await createSupaEntryMediaItem({ item: mediaData[0], volume, sizes: sizes ?? [], table });
         }
     }
 

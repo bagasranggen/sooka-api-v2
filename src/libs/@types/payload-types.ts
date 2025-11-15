@@ -205,6 +205,7 @@ export interface Addon {
  */
 export interface MediaAddon {
     id: number;
+    mobileAssets?: (number | null) | MediaAddon;
     alt: string;
     prefix?: string | null;
     updatedAt: string;
@@ -277,34 +278,6 @@ export interface Category {
 export interface Meta {
     title?: string | null;
     description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?:
-        | ({
-              relationTo: 'mediaAddon';
-              value: number | MediaAddon;
-          } | null)
-        | ({
-              relationTo: 'mediaDualPanel';
-              value: number | MediaDualPanel;
-          } | null)
-        | ({
-              relationTo: 'mediaGallery';
-              value: number | MediaGallery;
-          } | null)
-        | ({
-              relationTo: 'mediaGlobal';
-              value: number | MediaGlobal;
-          } | null)
-        | ({
-              relationTo: 'mediaMarquee';
-              value: number | MediaMarquee;
-          } | null)
-        | ({
-              relationTo: 'mediaProduct';
-              value: number | MediaProduct;
-          } | null);
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -312,6 +285,7 @@ export interface Meta {
  */
 export interface MediaDualPanel {
     id: number;
+    mobileAssets?: (number | null) | MediaDualPanel;
     alt: string;
     prefix?: string | null;
     updatedAt: string;
@@ -366,6 +340,7 @@ export interface MediaDualPanel {
  */
 export interface MediaGallery {
     id: number;
+    mobileAssets?: (number | null) | MediaGallery;
     alt: string;
     prefix?: string | null;
     updatedAt: string;
@@ -428,6 +403,7 @@ export interface MediaGallery {
  */
 export interface MediaGlobal {
     id: number;
+    mobileAssets?: (number | null) | MediaGallery;
     alt: string;
     prefix?: string | null;
     updatedAt: string;
@@ -506,6 +482,7 @@ export interface MediaGlobal {
  */
 export interface MediaMarquee {
     id: number;
+    mobileAssets?: (number | null) | MediaMarquee;
     alt: string;
     prefix?: string | null;
     updatedAt: string;
@@ -544,6 +521,7 @@ export interface MediaMarquee {
  */
 export interface MediaProduct {
     id: number;
+    mobileAssets?: (number | null) | MediaProduct;
     alt: string;
     prefix?: string | null;
     updatedAt: string;
@@ -662,6 +640,7 @@ export interface Page {
               | ContentBlockRelatedProducts
           )[]
         | null;
+    meta?: Meta;
     updatedAt: string;
     createdAt: string;
 }
@@ -1098,13 +1077,13 @@ export interface CategoriesSelect<T extends boolean = true> {
 export interface MetaSelect<T extends boolean = true> {
     title?: T;
     description?: T;
-    image?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "mediaAddon_select".
  */
 export interface MediaAddonSelect<T extends boolean = true> {
+    mobileAssets?: T;
     alt?: T;
     prefix?: T;
     updatedAt?: T;
@@ -1138,6 +1117,7 @@ export interface MediaAddonSelect<T extends boolean = true> {
  * via the `definition` "mediaDualPanel_select".
  */
 export interface MediaDualPanelSelect<T extends boolean = true> {
+    mobileAssets?: T;
     alt?: T;
     prefix?: T;
     updatedAt?: T;
@@ -1201,6 +1181,7 @@ export interface MediaDualPanelSelect<T extends boolean = true> {
  * via the `definition` "mediaGallery_select".
  */
 export interface MediaGallerySelect<T extends boolean = true> {
+    mobileAssets?: T;
     alt?: T;
     prefix?: T;
     updatedAt?: T;
@@ -1274,6 +1255,7 @@ export interface MediaGallerySelect<T extends boolean = true> {
  * via the `definition` "mediaGlobal_select".
  */
 export interface MediaGlobalSelect<T extends boolean = true> {
+    mobileAssets?: T;
     alt?: T;
     prefix?: T;
     updatedAt?: T;
@@ -1367,6 +1349,7 @@ export interface MediaGlobalSelect<T extends boolean = true> {
  * via the `definition` "mediaMarquee_select".
  */
 export interface MediaMarqueeSelect<T extends boolean = true> {
+    mobileAssets?: T;
     alt?: T;
     prefix?: T;
     updatedAt?: T;
@@ -1410,6 +1393,7 @@ export interface MediaMarqueeSelect<T extends boolean = true> {
  * via the `definition` "mediaProduct_select".
  */
 export interface MediaProductSelect<T extends boolean = true> {
+    mobileAssets?: T;
     alt?: T;
     prefix?: T;
     updatedAt?: T;
@@ -1549,6 +1533,7 @@ export interface PagesSelect<T extends boolean = true> {
               marquee?: T | ContentBlockMarqueeSelect<T>;
               relatedProducts?: T | ContentBlockRelatedProductsSelect<T>;
           };
+    meta?: T | MetaSelect<T>;
     updatedAt?: T;
     createdAt?: T;
 }
