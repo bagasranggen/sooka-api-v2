@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { createSupaEntryStatus } from '../../factory/supabase/createSupaEntryStatus';
 import { getSupaMedia } from './getSupaMedia';
 import { getSupaPrices } from './getSupaPrices';
+import { sortArrayObject } from '@/libs/utils';
 
 export const getSupaRelatedAddons = async ({ id }: { id: number }) => {
     const data: any[] = [];
@@ -25,7 +26,7 @@ export const getSupaRelatedAddons = async ({ id }: { id: number }) => {
 
         if (addonsData && addonsData.length > 0) {
             await Promise.all(
-                addonsData.map(async (item) => {
+                addonsData.map(async (item, i) => {
                     const { isLive } = createSupaEntryStatus(item);
 
                     if (!isLive) return;
@@ -34,6 +35,7 @@ export const getSupaRelatedAddons = async ({ id }: { id: number }) => {
                     const mediaId = item?.thumbnail_id;
 
                     data.push({
+                        order: i,
                         title: item.title,
                         slug: item.slug,
                         prices: await getSupaPrices({ table: 'addons_prices', id }),
@@ -48,6 +50,8 @@ export const getSupaRelatedAddons = async ({ id }: { id: number }) => {
             );
         }
     }
+
+    if (data) sortArrayObject({ items: data, key: 'order' });
 
     return data;
 };
