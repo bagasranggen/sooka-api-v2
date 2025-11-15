@@ -92,7 +92,7 @@ export async function GET() {
                     });
                 }
 
-                let tmp = null;
+                let tmp = { id: i };
 
                 const tag = await getSupaTags({ id: item?.tag_id });
                 const products = await createSupaRelatedProducts({ productIds });
@@ -105,6 +105,8 @@ export async function GET() {
             })
         );
     }
+
+    if (highlights.length > 0) sortArrayObject({ items: highlights, key: 'order' });
 
     const STORY_MEDIA_SIZES = ['storyMediaDesktop', 'storyMediaMobile'];
 
