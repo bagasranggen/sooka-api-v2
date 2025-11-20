@@ -51,6 +51,20 @@ export async function GET(req: NextRequest) {
 
                 const productId = item?.id;
 
+                let flavour = null;
+                if (item?.flavour_show_flavour) {
+                    flavour = Object.assign(flavour ?? {}, { showFlavour: item?.flavour_show_flavour });
+                }
+                if (item?.flavour_fresh_creamy) {
+                    flavour = Object.assign(flavour ?? {}, { freshCreamy: item?.flavour_fresh_creamy });
+                }
+                if (item?.flavour_custardy_spongy) {
+                    flavour = Object.assign(flavour ?? {}, { custardySpongy: item?.flavour_custardy_spongy });
+                }
+                if (item?.flavour_tangy_sweet) {
+                    flavour = Object.assign(flavour ?? {}, { tangySweet: item?.flavour_tangy_sweet });
+                }
+
                 data.push({
                     order: i,
                     ...createSupaProductBase({ item }),
@@ -65,6 +79,7 @@ export async function GET(req: NextRequest) {
                         volume: 'mediaProduct',
                         sizes: ['productMarquee', 'productMarqueeMobile'],
                     }),
+                    flavour,
                 });
             })
         );
