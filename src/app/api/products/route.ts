@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
                 data.push({
                     order: i,
                     meta: createSupaMeta({ item }),
-                    ...createSupaProductBase({ item }),
+                    ...(await createSupaProductBase({ item })),
                     ...(await createSupaProductInfo({ item })),
                     addons: await getSupaRelatedAddons({ id: productId }),
                     marquee: await getSupaRelatedMarquee({
