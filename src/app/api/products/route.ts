@@ -6,6 +6,9 @@ import { createSupaEntryStatus, createSupaMeta, createSupaProductBase, createSup
 import { getSupaRelatedAddons, getSupaRelatedMarquee, sortArrayObject } from '@/libs/utils';
 
 export async function GET(req: NextRequest) {
+    const AVAILABLE_VALUE = 'available';
+    const UNAVAILABLE_VALUE = 'unavailable';
+
     const searchParams = req.nextUrl.searchParams;
     const slug = searchParams.get('slug');
     const category = searchParams.get('category');
@@ -23,22 +26,43 @@ export async function GET(req: NextRequest) {
     }
 
     if (category) {
-        const { data } = await supabase(await cookies())
+        await supabase(await cookies())
             .from('products')
             .select()
             .eq('category_id', category)
-            .order('_order', { ascending: true });
+            .eq('availability', AVAILABLE_VALUE)
+            .order('_order', { ascending: true })
+            .then(async ({ data }) => {
+                if (data) productsData = data;
 
-        if (data) productsData = data;
+                const { data: unavailableData } = await supabase(await cookies())
+                    .from('products')
+                    .select()
+                    .eq('category_id', category)
+                    .eq('availability', UNAVAILABLE_VALUE)
+                    .order('_order', { ascending: true });
+
+                if (unavailableData) productsData.push(...unavailableData);
+            });
     }
 
     if (slug === null && category === null) {
-        const { data } = await supabase(await cookies())
+        await supabase(await cookies())
             .from('products')
             .select()
-            .order('availability', { ascending: true })
-            .order('_order', { ascending: true });
-        if (data) productsData = data;
+            .eq('availability', AVAILABLE_VALUE)
+            .order('_order', { ascending: true })
+            .then(async ({ data }) => {
+                if (data) productsData = data;
+
+                const { data: unavailableData } = await supabase(await cookies())
+                    .from('products')
+                    .select()
+                    .eq('availability', UNAVAILABLE_VALUE)
+                    .order('_order', { ascending: true });
+
+                if (unavailableData) productsData.push(...unavailableData);
+            });
     }
 
     const data: any[] = [];
