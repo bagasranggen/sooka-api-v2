@@ -688,8 +688,10 @@ export interface Product {
     thumbnail?: (number | null) | MediaProduct;
     thumbnailHover?: (number | null) | MediaProduct;
     marquee?: (number | MediaProduct)[] | null;
-    bannerTitle?: string | null;
     availability: 'available' | 'unavailable';
+    unavailableLabel?: (number | null) | Tag;
+    unavailableCustomLabel?: string | null;
+    bannerTitle?: string | null;
     description: {
         root: {
             type: string;
@@ -713,6 +715,21 @@ export interface Product {
     }[];
     addons?: (number | Addon)[] | null;
     meta?: Meta;
+    updatedAt: string;
+    createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+    id: number;
+    typeHandle?: string | null;
+    entryStatus?: ('disabled' | 'live') | null;
+    title: string;
+    slug?: string | null;
+    url?: string | null;
+    uri?: string | null;
     updatedAt: string;
     createdAt: string;
 }
@@ -827,21 +844,6 @@ export interface ContentBlockRelatedProducts {
     id?: string | null;
     blockName?: string | null;
     blockType: 'relatedProducts';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-    id: number;
-    typeHandle?: string | null;
-    entryStatus?: ('disabled' | 'live') | null;
-    title: string;
-    slug?: string | null;
-    url?: string | null;
-    uri?: string | null;
-    updatedAt: string;
-    createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1651,8 +1653,10 @@ export interface ProductsSelect<T extends boolean = true> {
     thumbnail?: T;
     thumbnailHover?: T;
     marquee?: T;
-    bannerTitle?: T;
     availability?: T;
+    unavailableLabel?: T;
+    unavailableCustomLabel?: T;
+    bannerTitle?: T;
     description?: T;
     category?: T;
     flavour?: T | FlavourSelect<T>;
