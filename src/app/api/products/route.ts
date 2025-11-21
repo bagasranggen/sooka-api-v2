@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 import { supabase } from '@/libs/fetcher';
-import { createSupaEntryStatus, createSupaProductBase, createSupaProductInfo } from '@/libs/factory';
+import { createSupaEntryStatus, createSupaMeta, createSupaProductBase, createSupaProductInfo } from '@/libs/factory';
 import { getSupaRelatedAddons, getSupaRelatedMarquee, sortArrayObject } from '@/libs/utils';
 
 export async function GET(req: NextRequest) {
@@ -67,6 +67,7 @@ export async function GET(req: NextRequest) {
 
                 data.push({
                     order: i,
+                    meta: createSupaMeta({ item }),
                     ...createSupaProductBase({ item }),
                     ...(await createSupaProductInfo({ item })),
                     addons: await getSupaRelatedAddons({ id: productId }),
