@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
             .from('products')
             .select()
             .eq('slug', slug)
-            .order('slug', { ascending: true });
+            .order('_order', { ascending: true });
 
         if (data) productsData = data;
     }
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
             .from('products')
             .select()
             .eq('category_id', category)
-            .order('slug', { ascending: true });
+            .order('_order', { ascending: true });
 
         if (data) productsData = data;
     }
@@ -35,8 +35,9 @@ export async function GET(req: NextRequest) {
     if (slug === null && category === null) {
         const { data } = await supabase(await cookies())
             .from('products')
-            .select();
-
+            .select()
+            .order('availability', { ascending: true })
+            .order('_order', { ascending: true });
         if (data) productsData = data;
     }
 
