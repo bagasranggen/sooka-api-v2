@@ -1,8 +1,10 @@
-import { supabase } from '@/libs/fetcher';
 import { cookies } from 'next/headers';
 
-export const getSupaTags = async ({ id }: { id: number }) => {
-    let data = null;
+import { supabase } from '@/libs/fetcher';
+import { Tag } from '@/libs/@types';
+
+export const getSupaTags = async ({ id }: { id: number }): Promise<Tag | null> => {
+    let data: Tag | null = null;
 
     if (id) {
         const { data: tagsData } = await supabase(await cookies())
@@ -11,7 +13,7 @@ export const getSupaTags = async ({ id }: { id: number }) => {
             .eq('id', id);
 
         if (tagsData && tagsData.length > 0) {
-            const tagItem = tagsData[0];
+            const tagItem: Tag = tagsData[0] as Tag;
 
             data = Object.assign(data ?? {}, tagItem);
         }
