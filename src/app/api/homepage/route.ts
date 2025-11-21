@@ -62,7 +62,7 @@ export async function GET() {
                         sizes: ['bannerDesktop', 'bannerTablet', 'bannerMobile'],
                     }),
                     product: {
-                        ...createSupaProductBase({ item: product?.[0] }),
+                        ...(await createSupaProductBase({ item: product?.[0] })),
                         ...(await createSupaProductInfo({ item: product?.[0] })),
                     },
                     link: await createSupaEntryLinkItem({ item }),
