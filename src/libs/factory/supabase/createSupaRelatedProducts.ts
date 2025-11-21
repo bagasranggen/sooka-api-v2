@@ -21,7 +21,7 @@ export const createSupaRelatedProducts = async ({ productIds }: { productIds?: n
                 d.map(async (item) => {
                     if (data) {
                         data.push({
-                            ...createSupaProductBase({ item }),
+                            ...(await createSupaProductBase({ item })),
                             ...(await createSupaProductInfo({ item })),
                         });
                     }
