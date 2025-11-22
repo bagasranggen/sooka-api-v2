@@ -52,7 +52,7 @@ export const getSupaRelatedMarquee = async ({
                         sizes,
                     });
 
-                    if (media && data) data.push({ order: i, media });
+                    if (media && data) data.push({ order: i, ...media });
                 })
             );
         }
