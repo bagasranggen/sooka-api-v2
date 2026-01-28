@@ -1787,6 +1787,13 @@ export interface Navigation {
         | {
               entryStatus?: ('disabled' | 'live') | null;
               link?: Link;
+              children?:
+                  | {
+                        entryStatus?: ('disabled' | 'live') | null;
+                        link?: Link;
+                        id?: string | null;
+                    }[]
+                  | null;
               id?: string | null;
           }[]
         | null;
@@ -1931,6 +1938,13 @@ export interface NavigationSelect<T extends boolean = true> {
         | {
               entryStatus?: T;
               link?: T | LinkSelect<T>;
+              children?:
+                  | T
+                  | {
+                        entryStatus?: T;
+                        link?: T | LinkSelect<T>;
+                        id?: T;
+                    };
               id?: T;
           };
     updatedAt?: T;
