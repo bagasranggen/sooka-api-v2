@@ -20,10 +20,33 @@ export async function GET() {
 
                 if (!isLive) return;
 
+                const { data: navigationChildrenData } = await supabase(await cookies())
+                    .from('navigation_navigations_children')
+                    .select()
+                    .eq('_parent_id', item?.id)
+                    .order('_order', { ascending: true });
+
+                const children: any[] = [];
+
+                if (navigationChildrenData && navigationChildrenData.length > 0) {
+                    navigationChildrenData.map(async (itm) => {
+                        const tmp = await createSupaEntryLinkItem({ item: itm });
+
+                        if (tmp) {
+                            children.push({
+                                order: itm?._order,
+                                entryStatus: itm?.entry_status,
+                                link: tmp,
+                            });
+                        }
+                    });
+                }
+
                 navigations.push({
                     order: item?._order,
                     entryStatus: item?.entry_status,
                     link: await createSupaEntryLinkItem({ item }),
+                    children: sortArrayObject({ items: children, key: 'order' }),
                 });
             })
         );
@@ -54,7 +77,7 @@ export async function GET() {
 
     if (fd?.business_hours) {
         footerNavigation = Object.assign(footerNavigation ?? {}, {
-            businessHour: fd.business_hours,
+            businessHours: fd.business_hours,
         });
     }
 

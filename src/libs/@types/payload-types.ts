@@ -678,6 +678,7 @@ export interface Link {
  */
 export interface Product {
     id: number;
+    _order?: string | null;
     typeHandle?: string | null;
     entryStatus?: ('disabled' | 'live') | null;
     title: string;
@@ -687,6 +688,9 @@ export interface Product {
     thumbnail?: (number | null) | MediaProduct;
     thumbnailHover?: (number | null) | MediaProduct;
     marquee?: (number | MediaProduct)[] | null;
+    availability: 'available' | 'unavailable';
+    unavailableLabel?: (number | null) | Tag;
+    unavailableCustomLabel?: string | null;
     bannerTitle?: string | null;
     description: {
         root: {
@@ -716,9 +720,25 @@ export interface Product {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+    id: number;
+    typeHandle?: string | null;
+    entryStatus?: ('disabled' | 'live') | null;
+    title: string;
+    slug?: string | null;
+    url?: string | null;
+    uri?: string | null;
+    updatedAt: string;
+    createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "Flavour".
  */
 export interface Flavour {
+    showFlavour?: boolean | null;
     freshCreamy: '_0' | '_10' | '_20' | '_30' | '_40' | '_50' | '_60' | '_70' | '_80' | '_90' | '_100';
     custardySpongy: '_0' | '_10' | '_20' | '_30' | '_40' | '_50' | '_60' | '_70' | '_80' | '_90' | '_100';
     tangySweet: '_0' | '_10' | '_20' | '_30' | '_40' | '_50' | '_60' | '_70' | '_80' | '_90' | '_100';
@@ -824,21 +844,6 @@ export interface ContentBlockRelatedProducts {
     id?: string | null;
     blockName?: string | null;
     blockType: 'relatedProducts';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-    id: number;
-    typeHandle?: string | null;
-    entryStatus?: ('disabled' | 'live') | null;
-    title: string;
-    slug?: string | null;
-    url?: string | null;
-    uri?: string | null;
-    updatedAt: string;
-    createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1638,6 +1643,7 @@ export interface ContentBlockRelatedProductsSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
+    _order?: T;
     typeHandle?: T;
     entryStatus?: T;
     title?: T;
@@ -1647,6 +1653,9 @@ export interface ProductsSelect<T extends boolean = true> {
     thumbnail?: T;
     thumbnailHover?: T;
     marquee?: T;
+    availability?: T;
+    unavailableLabel?: T;
+    unavailableCustomLabel?: T;
     bannerTitle?: T;
     description?: T;
     category?: T;
@@ -1667,6 +1676,7 @@ export interface ProductsSelect<T extends boolean = true> {
  * via the `definition` "Flavour_select".
  */
 export interface FlavourSelect<T extends boolean = true> {
+    showFlavour?: T;
     freshCreamy?: T;
     custardySpongy?: T;
     tangySweet?: T;
@@ -1777,6 +1787,13 @@ export interface Navigation {
         | {
               entryStatus?: ('disabled' | 'live') | null;
               link?: Link;
+              children?:
+                  | {
+                        entryStatus?: ('disabled' | 'live') | null;
+                        link?: Link;
+                        id?: string | null;
+                    }[]
+                  | null;
               id?: string | null;
           }[]
         | null;
@@ -1921,6 +1938,13 @@ export interface NavigationSelect<T extends boolean = true> {
         | {
               entryStatus?: T;
               link?: T | LinkSelect<T>;
+              children?:
+                  | T
+                  | {
+                        entryStatus?: T;
+                        link?: T | LinkSelect<T>;
+                        id?: T;
+                    };
               id?: T;
           };
     updatedAt?: T;
