@@ -29,17 +29,19 @@ export async function GET() {
                 const children: any[] = [];
 
                 if (navigationChildrenData && navigationChildrenData.length > 0) {
-                    navigationChildrenData.map(async (itm) => {
-                        const tmp = await createSupaEntryLinkItem({ item: itm });
+                    await Promise.all(
+                        navigationChildrenData.map(async (itm) => {
+                            const tmp = await createSupaEntryLinkItem({ item: itm });
 
-                        if (tmp) {
-                            children.push({
-                                order: itm?._order,
-                                entryStatus: itm?.entry_status,
-                                link: tmp,
-                            });
-                        }
-                    });
+                            if (tmp) {
+                                children.push({
+                                    order: itm?._order,
+                                    entryStatus: itm?.entry_status,
+                                    link: tmp,
+                                });
+                            }
+                        })
+                    );
                 }
 
                 navigations.push({
