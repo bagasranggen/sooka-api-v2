@@ -1,4 +1,4 @@
-import { Product } from '@/libs/@types';
+import { Product, Tag } from '@/libs/@types';
 import { getSupaTags } from '@/libs/utils';
 
 export const createSupaProductBase = async ({
@@ -6,17 +6,11 @@ export const createSupaProductBase = async ({
 }: {
     item: any;
 }): Promise<
-    Pick<
+    {
+        unavailableLabel?: number | null | Pick<Tag, 'slug' | 'title' | 'badgeTitle'>;
+    } & Pick<
         Product,
-        | 'url'
-        | 'uri'
-        | 'slug'
-        | 'title'
-        | 'bannerTitle'
-        | 'description'
-        | 'availability'
-        | 'unavailableLabel'
-        | 'unavailableCustomLabel'
+        'url' | 'uri' | 'slug' | 'title' | 'bannerTitle' | 'description' | 'availability' | 'unavailableCustomLabel'
     >
 > => {
     return {
