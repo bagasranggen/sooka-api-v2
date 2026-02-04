@@ -708,6 +708,10 @@ export interface Product {
         [k: string]: unknown;
     };
     category: number | Category;
+    /**
+     * Badge will only shown on product listing page
+     */
+    badge?: (number | null) | Tag;
     flavour: Flavour;
     prices: {
         price: Price;
@@ -730,6 +734,10 @@ export interface Tag {
     slug?: string | null;
     url?: string | null;
     uri?: string | null;
+    /**
+     * This will only shown on badge component
+     */
+    badgeTitle?: string | null;
     updatedAt: string;
     createdAt: string;
 }
@@ -1659,6 +1667,7 @@ export interface ProductsSelect<T extends boolean = true> {
     bannerTitle?: T;
     description?: T;
     category?: T;
+    badge?: T;
     flavour?: T | FlavourSelect<T>;
     prices?:
         | T
@@ -1692,6 +1701,7 @@ export interface TagsSelect<T extends boolean = true> {
     slug?: T;
     url?: T;
     uri?: T;
+    badgeTitle?: T;
     updatedAt?: T;
     createdAt?: T;
 }
